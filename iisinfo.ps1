@@ -57,5 +57,6 @@ foreach($computer in $computers){
         }
     }
 }
+$date = get-date -Format ddMMyy
 $location = Get-Location
-$report | Export-Csv "$location\iisreport.csv"
+$report | Export-Csv "$location\iisreport_$date.csv"

@@ -4,6 +4,10 @@
     .Version: 1.0
     .Notas:
         Este script nos permite obtener informacion acerca del IIS y los sitios.
+    .prerequisito:
+        archivo .txt con listado de servidores.
+    .ejecucion: 
+        solo basta con ejecutarlo ./iisinfo.ps1 este nos va a solicitar un .txt con el listado de servidores
 #>
 
 <# Funcion que nos abre un cuadro de dialogo para obtener un listado de servidore #>

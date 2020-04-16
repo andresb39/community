@@ -1,7 +1,8 @@
 <#
     .Autor: Jesus Bergano
     .Fecha: 14/04/2020
-    .Version: 1.0
+    .Edit: 15/04/202
+    .Version: 2.0
     .Notas:
         Este script nos permite obtener informacion acerca del IIS y los sitios.
     .prerequisito:
@@ -37,7 +38,7 @@ foreach($computer in $computers){
     if((Test-Connection -ComputerName $computer -Quiet) -eq $true){
         $connection =  Get-Service -ComputerName $computer -ServiceName "W3SVC" -ErrorAction SilentlyContinue
         if($connection.Status -eq "Running"){
-            Invoke-Command -ComputerName $computer -ScriptBlock {Set-ExecutionPolicy Bypass |   Import-Module WebAdministration }
+            Invoke-Command -ComputerName $computer -ErrorAction  SilentlyContinue -ScriptBlock {Set-ExecutionPolicy Bypass |   Import-Module WebAdministration }
             $iisinfos = Invoke-Command -ComputerName $computer -ErrorAction  SilentlyContinue -ScriptBlock { Get-Website } 
             foreach($iisinf in $iisinfos){
                 $row = New-Object -TypeName PSObject
@@ -61,6 +62,28 @@ foreach($computer in $computers){
         }
     }
 }
-$date = get-date -Format ddMMyy
+
+
+$fragments = @()
+$fragments+= "<H1>$("IIS Report")</H1>"
+$fragments+= $report | convertto-html -Fragment
+$fragments+= "<p class='footer'>$(get-date)</p>"
+$convertParams = @{ 
+  head = @"
+ <Title>IIS Report</Title>
+<style>
+  BODY{font-family: Arial; font-size: 8pt; Background-color:silver}
+    H1{font-size: 14px; color:Black}
+    TABLE{border: 1px solid black; border-collapse: collapse; font-size: 8pt;}
+    TH{border: 1px solid black; background: Green; padding: 5px; color: white; text-align: center;}
+    TD{border: 1px solid black; padding: 5px; text-align: right;}
+  .footer{ color:green; margin-left:10px; font-family:Tahoma;  font-size:8pt; font-style:italic;}
+</style>
+"@
+ body = $fragments
+}
+
+$htmlreport  =  convertto-html @convertParams | Out-String
+$date = get-date -Format ddMMyyhhmmss
 $location = Get-Location
-$report | Export-Csv "$location\iisreport_$date.csv"
+$htmlreport | Out-File "$location\iisreport_$date.html"

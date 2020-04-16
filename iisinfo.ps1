@@ -87,3 +87,4 @@ $htmlreport  =  convertto-html @convertParams | Out-String
 $date = get-date -Format ddMMyyhhmmss
 $location = Get-Location
 $htmlreport | Out-File "$location\iisreport_$date.html"
+Invoke-Item "$location\iisreport_$date.html"

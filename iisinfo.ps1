@@ -49,7 +49,7 @@ foreach($computer in $computers){
                 $row | Add-Member -MemberType NoteProperty -Name "Physical Path" -Value $iisinf.physicalPath
                 $row | Add-Member -MemberType NoteProperty -Name  Bindings -Value $iisinf.bindings.Collection
                 $report += $row
-                foreach ($webapp in $iisinfo.Name){
+                foreach ($webapp in $iisinf.Name){
                     $webappinfo = Invoke-Command -ComputerName $computer  -ScriptBlock { Get-WebApplication -Site "$webapp"} 
                     foreach ($webappinf in $webappinfo){
                     $row = New-Object -TypeName PSObject

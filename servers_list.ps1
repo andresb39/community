@@ -3,6 +3,6 @@
   Si se necesita agregar una mas seguir la secuencia.
 #>
 $servers = @(
-  "BCSQL10",
-  "BCSQL24"
+  "server1",
+  "server2"
 )

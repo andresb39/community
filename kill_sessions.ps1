@@ -1,38 +1,34 @@
 <#
   Kill sesions windows servers
-  Este script usa el ps1 servers_list donde tendremos el lisardo de los servidores.
+  Autor: Jesus A. Bergano.
+  Version: 2.0
   Ejecucion: .\kill_session.ps1 -username username
+             .\kill_session.ps1 -username username -Verbose
 #>
 
-param(
-  [parameter(Mandatory)]
-  [string]$username
-)
+Function kill_session{
+  param(
+    [parameter(Mandatory)]
+    [string]$username
+  )
+  Write-Verbose "Get Windows Servers"
+  $computers = Get-ADComputer -Filter { (OperatingSystem -like 'Windows*Server*201*') -or (OperatingSystem -like 'Windows*Server*2008*')} -Properties OperatingSystem | Select Name
 
-# Agregamos listado de servidores
-$scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
-. "$($scriptPath)\servers_list.ps1"
-
-$id = @()
-try{
-  foreach($srv in $servers){
-    $sesion = query session $username /server:$srv
-    #Search user session ID
-
-    if($sesion -eq $null){
-      Write-host "No hay sessiones $srv" -ForegroundColor Green
-    }
-    Else{
-        ForEach($ssid in $sesion){
-          $splitUp = $ssid -split "\s+"
-          $line = $splitUp[0]
-          $id = $splitUp[3]
+  Foreach ($computer in $computers.Name){
+    Write-Verbose "Test conection $computer"
+    if((Test-Connection -ComputerName $computer -Quiet -ErrorAction SilentlyContinue) -eq $true){
+      Write-Verbose "Get Sessions"
+      $sessions = Invoke-Command -ComputerName $computer -ErrorAction SilentlyContinue -ScriptBlock { Get-Process -IncludeUserName -ErrorAction SilentlyContinue | Select-Object UserName,SessionId | Where-Object { $_.UserName -ne $null -and $_.UserName.StartsWith("BUE299") } | Sort-Object SessionId -Unique } | Select-Object UserName,SessionId
+      if($sessions.UserName -like $username){
+        Write-Verbose "Kill Sessions $sessions.UserName"
+        Write-Host "Sesion en servidor $computer" -ForegroundColor Red
+        rwinsta /server:$computer $sessions.SessionId | Out-Null
       }
-      Write-Host "Kill Sesion $id $srv" -ForegroundColor Red
-      rwinsta /server:$srv $id | Out-Null
+      else{
+        Write-Verbose "No session"
+        Write-host "No hay sesiones $computer" -ForegroundColor Green
+      }
     }
   }
 }
-catch{
-  write-host "Error" -ForegroundColor Red
-}
+kill_session

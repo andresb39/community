@@ -24,28 +24,28 @@ GO
 '@
 
 <#Backup DB PotigianP#>
-echo "Start Execution Backup Full --- $datetime" | out-file $pathlog
+Write-Output "Start Execution Backup Full --- $datetime" | out-file $pathlog
 Invoke-SqlCmd -ServerInstance $sqllocal -Query "BACKUP DATABASE [$dbname] TO DISK = N'$backupPath' WITH NOFORMAT, NOINIT, NAME = N'Backup Full DB', SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10
 GO" -Username sa -Password admin01 -QueryTimeout 0 -ErrorAction Stop -Verbose *>> $pathlog
 $datetime = get-date -format "dd.MMMM.yyyy-HH.m.ss"
-echo "Finish Execution Backup Full --- $datetime" | out-file $pathlog -append
+Write-Output "Finish Execution Backup Full --- $datetime" | out-file $pathlog -append
 
 
 <#Copy backup File to remote server...#>
 if (Test-Path $backupPath) {
 	$datetime = get-date -format "dd.MMMM.yyyy-HH.m.ss"
-    echo "Start copy Backup file to Remote Server --- $datetime"  | out-file $pathlog -append
+    Write-Output "Start copy Backup file to Remote Server --- $datetime"  | out-file $pathlog -append
     Move-Item -Path $backupPath -Destination $pathremote -Force -ErrorAction Stop -Verbose *>> $pathlog
 	$datetime = get-date -format "dd.MMMM.yyyy-HH.m.ss"
-    echo "Finish copy Backup file to remote server --- $datetime"  | out-file $pathlog -append
+    Write-Output "Finish copy Backup file to remote server --- $datetime"  | out-file $pathlog -append
 }
 else {
-    echo "File move failed"  | out-file $pathlog -append
+    Write-Output "File move failed"  | out-file $pathlog -append
 }
 
 <# Ejecucion del Restore#>
 $datetime = get-date -format "dd.MMMM.yyyy-HH.m.ss"
-echo "Start execution Restore Database_to_restore  --- $datetime" | out-file $pathlog -append
+Write-Output "Start execution Restore Database_to_restore  --- $datetime" | out-file $pathlog -append
 Invoke-SqlCmd -ServerInstance $sqlremote -Query $script_sp_restore -Username sa -Password Admin01 -QueryTimeout 0 -ErrorAction Stop -Verbose *>> $pathlog
 $datetime = get-date -format "dd.MMMM.yyyy-HH.m.ss"
-echo "Finish execution Restore Database_to_restore --- $datetime" | out-file $pathlog -append
+Write-Output "Finish execution Restore Database_to_restore --- $datetime" | out-file $pathlog -append

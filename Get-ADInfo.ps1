@@ -38,6 +38,9 @@ function Get-ADInfo {
     } 
 
     function Menu {   
+        param (
+            [string]$Title = 'Active Directory Report'
+        )
         Clear-Host
         Write-Host "================ $Title ================"
         Write-Host "1: Press '1' Usuarios con ultimo logueo mayor a 90 dias."

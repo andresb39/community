@@ -16,9 +16,6 @@
         Get-ADInfo 
 
     .NOTES
-        Ingresar la direccion de correo a quien se enviara el reporte es obligatorio.
-        Modifique el SMTP a vuestra necesidad.
-
         Autor: Jesus A. Bergano G.
         Version: V1.0
         Fecha: Nov. 2019

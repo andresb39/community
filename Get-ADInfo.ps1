@@ -10,7 +10,7 @@
             TrustRelationships.
             RecycleBin Status.
             Replication. 
-            
+
     .EXAMPLE
         Import-Module .\Get-ADInfo.ps1
         Get-ADInfo 
@@ -24,7 +24,8 @@
         Fecha: Nov. 2019
 #>
 function Get-ADInfo {
-    
+
+
     # Variables #
     $date = Get-Date
     $old = $date.Date.AddDays(-90)
@@ -82,15 +83,19 @@ function Get-ADInfo {
     }
 
     function ADReport {
+        $report = @()
         $sites = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest()
 
         foreach ($site in $sites.Sites) {
-            $site | Select-Object  Domains, Subnets, Servers, AdjacentSites 
-            $result.Domains | Select-Object Forest, Name, PdcRoleOwner | Format-Table -AutoSize
-            $result.Subnets | Format-Table -AutoSize
-            $result.Servers | Select-Object Name, OSVersion, IPAddress | Format-Table -AutoSize
-            $result.AdjacentSites | Select-Object name | Format-Table -AutoSize
+            $row = New-Object -TypeName PSObject
+            $row | Add-Member -MemberType NoteProperty -Name Name -Value $site.Name
+            $row | Add-Member -MemberType NoteProperty -Name Domains -Value $site.Domains
+            $row | Add-Member -MemberType NoteProperty -Name Subnets -Value $site.Subnets
+            $row | Add-Member -MemberType NoteProperty -Name Servers -Value $site.Servers
+            $row | Add-Member -MemberType NoteProperty -Name AdjacentSites -Value $site.AdjacentSites
+            $report += $row          
         }
+        $report | Format-Table -AutoSize
     }
 
     function TrustRelations {

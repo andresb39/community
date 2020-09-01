@@ -16,11 +16,11 @@
 #>
 
 param(
-    [parameter(Mandatory)]
-    [string]$server
+  [parameter(Mandatory)]
+  [string]$server
 )
 $commands = {
-    Get-ChildItem -Path C:\inetpub\logs\LogFiles -Recurse -ea 0 |
+  Get-ChildItem -Path C:\inetpub\logs\LogFiles -Recurse -ea 0 |
     Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-31) } |
     ForEach-Object { $_ | Remove-Item -Force -Confirm:$false } 
 }

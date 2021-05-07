@@ -1,6 +1,5 @@
 provider "aws" {
   region = "${var.region}"
-  profile = "QA"
 }
 
 resource "aws_s3_bucket" "b" {

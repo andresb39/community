@@ -12,3 +12,7 @@ variable "bucket_name" {
 variable "user_name" {
     type = string
 }
+# Si necesitamos usar profiles descomentar las siguientes lineas.
+#variable "profile"{
+# type = string
+#}

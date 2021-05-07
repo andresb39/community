@@ -1,6 +1,5 @@
 provider "aws" {
   region = "${var.region}"
-  profile = "QA"
 }
 
 resource "aws_s3_bucket" "b" {
@@ -14,7 +13,7 @@ resource "aws_s3_bucket" "b" {
   }
 }
 
-resource "aws_iam_user" "lb" {
+resource "aws_iam_user" "user_bucket" {
   name = "user-tf-bucket-test"
 
   tags = {
@@ -23,6 +22,6 @@ resource "aws_iam_user" "lb" {
   }
 }
 
-resource "aws_iam_access_key" "lb" {
-  user = aws_iam_user.lb.name
+resource "aws_iam_access_key" "user_bucket" {
+  user = aws_iam_user.user_bucket.name
 }

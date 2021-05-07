@@ -7,7 +7,7 @@ data "template_file" "iam-policy-template" {
 }
 
 
-resource "aws_iam_user_policy" "lb_ro" {
+resource "aws_iam_user_policy" "policy" {
   name = "test"
   user = aws_iam_user.user_bucket.name
   policy = data.template_file.iam-policy-template.rendered

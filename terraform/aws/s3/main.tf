@@ -1,9 +1,10 @@
 provider "aws" {
   region = "${var.region}"
+  profile = "QA"
 }
 
 resource "aws_s3_bucket" "b" {
-  bucket = "my-tf-test-bucket-jb"
+  bucket = "${var.bucket_name}"
   acl    = "private"
 
   tags = {
@@ -14,7 +15,7 @@ resource "aws_s3_bucket" "b" {
 }
 
 resource "aws_iam_user" "user_bucket" {
-  name = "user-tf-bucket-test"
+  name = "${var.user_name}"
 
   tags = {
     Owner = "Terraform"

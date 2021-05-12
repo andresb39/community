@@ -1,0 +1,7 @@
+zone_name = "testing.tucampus.org"
+lb_name = "test-lb3"
+site_name = "jb-test"
+inst_name = "dockerint-4"
+tg_name = "tg-prueba2"
+port = "8088"
+vpc_id = "vpc-2b9db951"

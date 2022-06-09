@@ -1,0 +1,19 @@
+autoDiscovery:
+  clusterName:  ${cluster_name}
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/${cluster_name}
+
+  roles:
+  - worker
+
+awsRegion: us-east-1
+cloudProvider: aws
+
+rbac:
+  create: true
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: ${autoscaler_role_arn}
+    create: true
+    name: "autoscaler"

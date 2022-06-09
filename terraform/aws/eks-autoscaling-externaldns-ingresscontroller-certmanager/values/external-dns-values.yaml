@@ -1,0 +1,26 @@
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: ${external_dns_role_arn}
+  name: "external-dns"
+
+rbac:
+  create: true
+  
+deploymentAnnotations:
+  iam.amazonaws.com/role: ${external_dns_role_arn}
+
+sources:
+  - service
+  - ingress
+
+policy: sync
+
+registry: txt
+txtOwnerId: ${external_dns_zoneid}
+txtPrefix: ""
+
+domainFilters:
+  - ${external_dns_base_domain}
+
+provider: aws
